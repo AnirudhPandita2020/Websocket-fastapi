@@ -15,3 +15,5 @@ Note:
 The format of the websocket url is as follows(Local machine) -> ws://localhost:8000/ws/{room_no}
 
 The message will be broadcasted only to the websocket belonging to the {room_no}
+
+The project will be connected to MongoDB for data persistence.
