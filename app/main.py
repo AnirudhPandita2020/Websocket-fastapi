@@ -64,4 +64,9 @@ async def websocket_endpoint(websocket: WebSocket,task_id:int):
     except WebSocketDisconnect:
         print(websocket)
         manager.disconnect(websocket,task_id)
-        await manager.broadcast("left",task_id)
+        data = {
+            "message":"left",
+            "task_id":"1"
+        }
+        message = json.dumps(data)
+        await manager.broadcast(message,task_id)
