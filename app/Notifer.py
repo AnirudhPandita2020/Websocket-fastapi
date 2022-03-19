@@ -5,15 +5,16 @@ class ConnectionManager:
     def __init__(self):
         self.active_connections: dict = defaultdict(list)
 
-    async def connect(self, websocket: WebSocket,task_id:int):
+    async def connect(self, websocket: WebSocket,task_id:int,user_id):
         await websocket.accept()
         if self.active_connections[task_id] is None:
             self.active_connections[task_id] = []
         else:
-            self.active_connections[task_id].append(websocket)
+            self.active_connections[task_id].append([websocket,user_id])
             
-    def disconnect(self, websocket: WebSocket,task_id:int):
-        self.active_connections[task_id].remove(websocket)
+    def disconnect(self, websocket: WebSocket,task_id:int,user_id:int):
+        index = self.active_connections[task_id].index([websocket,user_id])
+        self.active_connections[task_id].pop(index)
         if len(self.active_connections[task_id]) == 0:
             self.active_connections.pop(task_id)
 
@@ -22,4 +23,4 @@ class ConnectionManager:
 
     async def broadcast(self, message: str,task_id:int):
         for connection in self.active_connections[task_id]:
-            await connection.send_text(message)
+            await connection[0].send_text(message)
