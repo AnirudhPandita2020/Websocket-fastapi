@@ -24,3 +24,5 @@ class ConnectionManager:
     async def broadcast(self, message: str,task_id:int):
         for connection in self.active_connections[task_id]:
             await connection[0].send_text(message)
+            
+

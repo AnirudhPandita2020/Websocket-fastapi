@@ -59,6 +59,7 @@ async def websocket_endpoint(websocket: WebSocket,task_id:int,user_id:str):
                 "user_id":user_id
             }
     await manager.broadcast(f"{joined_message}",task_id)
+    print(manager.active_connections)
     try:
         while True:
             data = await websocket.receive_text()
@@ -81,3 +82,4 @@ async def websocket_endpoint(websocket: WebSocket,task_id:int,user_id:str):
         
         #testing the file
         await manager.broadcast(message,task_id)
+        print(manager.active_connections)
