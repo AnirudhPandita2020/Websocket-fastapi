@@ -49,7 +49,6 @@ async def get():
 manager = ConnectionManager()
 
 
-
 @app.websocket("/ws/{task_id}/{user_id}")
 async def websocket_endpoint(websocket: WebSocket,task_id:int,user_id:str):
     await manager.connect(websocket,task_id,user_id)

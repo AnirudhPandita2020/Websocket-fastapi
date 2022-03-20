@@ -12,7 +12,7 @@ class ConnectionManager:
         else:
             self.active_connections[task_id].append([websocket,user_id])
             
-    def disconnect(self, websocket: WebSocket,task_id:int,user_id:int):
+    def disconnect(self, websocket: WebSocket,task_id:int,user_id:str):
         index = self.active_connections[task_id].index([websocket,user_id])
         self.active_connections[task_id].pop(index)
         if len(self.active_connections[task_id]) == 0:
