@@ -1,6 +1,5 @@
 from collections import defaultdict
 from fastapi import WebSocket
-
 class ConnectionManager:
     def __init__(self):
         self.active_connections: dict = defaultdict(list)
@@ -15,8 +14,7 @@ class ConnectionManager:
     def disconnect(self, websocket: WebSocket,task_id:int,user_id:str):
         index = self.active_connections[task_id].index([websocket,user_id])
         self.active_connections[task_id].pop(index)
-        if len(self.active_connections[task_id]) == 0:
-            self.active_connections.pop(task_id)
+        
 
     async def send_personal_message(self, message: str, websocket: WebSocket,task_id:int):
         await websocket.send_text(message)
