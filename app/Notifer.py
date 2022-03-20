@@ -6,10 +6,8 @@ class ConnectionManager:
 
     async def connect(self, websocket: WebSocket,task_id:int,user_id):
         await websocket.accept()
-        if self.active_connections[task_id] is None:
-            self.active_connections[task_id] = []
-        else:
-            self.active_connections[task_id].append([websocket,user_id])
+        
+        self.active_connections[task_id].append([websocket,user_id])
             
     def disconnect(self, websocket: WebSocket,task_id:int,user_id:str):
         index = self.active_connections[task_id].index([websocket,user_id])
