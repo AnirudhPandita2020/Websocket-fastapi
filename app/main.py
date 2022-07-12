@@ -1,47 +1,30 @@
 
-import json
-from app.Notifer import ConnectionManager
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from fastapi.responses import HTMLResponse
+from app.WebSocketManager import WebSocketManager
+
+app = FastAPI(
+    title="Realtime chat"
+)
+
+broadcast = WebSocketManager()
 
 
-manager = ConnectionManager()
+@app.on_event("startup")
+async def startBroadcast():
+    await broadcast.connectService()
 
-app = FastAPI()
 
+@app.on_event("shutdown")
+async def closeBroadcast():
+    await broadcast.disconnectService()
 
 
 
 @app.websocket("/ws/{task_id}/{user_id}")
-async def websocket_endpoint(websocket: WebSocket,task_id:int,user_id:str):
-    await manager.connect(websocket,task_id,user_id)
-    joined_message = {
-                "message":"joined",
-                "task_id":str(task_id),
-                "user_id":user_id
-            }
-    await manager.broadcast(f"{joined_message}",task_id)
-    print(manager.active_connections)
+async def get_Connection(webSocket:WebSocket,task_id:int,user_id:str):
     try:
-        while True:
-            data = await websocket.receive_text()
-            
-            message_data = json.loads(data)
-            print(message_data['message'])
-            await manager.broadcast(f"{message_data}",task_id)
-            #await manager.broadcast(f"{joined_message}",task_id)
-    
-    
-    except WebSocketDisconnect:
-        print(websocket)
-        manager.disconnect(websocket,task_id,user_id)
-        data = {
-            "message":"left",
-            "task_id":str(task_id),
-            "user_id":user_id
-        }
-        message = json.dumps(data)
-        print(manager.active_connections)
-        #testing the file
-        await manager.broadcast(message,task_id)
         
+        await broadcast.chatroom_ws(webSocket,task_id,user_id)
+      
+    except WebSocketDisconnect as e:
+        print("Left {}".format(webSocket))
